@@ -1,0 +1,43 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class WordCounterApp extends JFrame implements ActionListener {
+    JTextArea textArea;
+    JButton countButton;
+    JLabel resultLabel;
+
+    public WordCounterApp() {
+        setTitle("Word Counter");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        textArea = new JTextArea();
+        add(new JScrollPane(textArea), BorderLayout.CENTER);
+
+        countButton = new JButton("Count Words");
+        countButton.addActionListener(this);
+        add(countButton, BorderLayout.SOUTH);
+
+        resultLabel = new JLabel("Word count will be displayed here.");
+        add(resultLabel, BorderLayout.NORTH);
+
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String text = textArea.getText().trim();
+        if (text.isEmpty()) {
+            resultLabel.setText("No text entered.");
+        } else {
+            String[] words = text.split("\\s+");
+            resultLabel.setText("Word Count: " + words.length);
+        }
+    }
+
+    public static void main(String[] args) {
+        new WordCounterApp();
+    }
+}
