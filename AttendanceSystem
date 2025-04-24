@@ -1,0 +1,43 @@
+import java.sql.*;
+import java.util.*;
+
+public class AttendanceSystem {
+    static final String DB_URL = "jdbc:mysql://localhost:3306/attendance_db";
+    static final String USER = "root";
+    static final String PASS = "yourpassword"; // Replace with your MySQL password
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS)) {
+            while (true) {
+                System.out.println("\n1. Add Student\n2. View Students\n3. Exit");
+                System.out.print("Choose: ");
+                int choice = scanner.nextInt(); scanner.nextLine();
+
+                if (choice == 1) {
+                    System.out.print("Enter Name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter Status (Present/Absent): ");
+                    String status = scanner.nextLine();
+                    PreparedStatement ps = conn.prepareStatement("INSERT INTO students(name, status) VALUES (?, ?)");
+                    ps.setString(1, name);
+                    ps.setString(2, status);
+                    ps.executeUpdate();
+                    System.out.println("Student added.");
+                } else if (choice == 2) {
+                    Statement stmt = conn.createStatement();
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM students");
+                    System.out.println("\nAttendance Records:");
+                    while (rs.next()) {
+                        System.out.println(rs.getInt("id") + " - " + rs.getString("name") + " - " + rs.getString("status"));
+                    }
+                } else {
+                    break;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        scanner.close();
+    }
+}
